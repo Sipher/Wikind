@@ -2,42 +2,38 @@
 #kdl_state = KDL.KGT.init
 KDL.KGT (action: KDL.KGT.Action) : (Kindelia.IO KDL.KGT.Response)
 
-// TODO : Change from subject to IO.FROM
+// TODO Add verification methods on Transfer Action
+// TODO Add verification methods on Mine Action
+// TODO Make the check balance action look better
 
 // Mine action
-KDL.KGT (KDL.KGT.Action.mint) = 
-  (Kindelia.IO.do_subj (user: U120) => 
-    (Kindelia.IO.do_take (state: KDL.KGT.State) => 
-      (Kindelia.IO.do_tick (tick: U120) => (
-        let state = User.Sipher.KGT.mint user tick state
-          (Kindelia.IO.do_save state (_: Unit) => 
-            Kindelia.IO.done (KDL.KGT.Response.mint Bool.true)
-          )
+KDL.KGT (KDL.KGT.Action.mint user) = 
+  (Kindelia.IO.do_take (state: KDL.KGT.State) => 
+    (Kindelia.IO.do_tick (tick: U120) => (
+      let state = User.Sipher.KGT.mint user tick state
+        (Kindelia.IO.do_save state (_: Unit) => 
+          Kindelia.IO.done (KDL.KGT.Response.mint Bool.true)
         )
       )
     )
   )
 
-// TODO : Change from subject to IO.FROM
 
 // Transfer action
-KDL.KGT (KDL.KGT.Action.send to value) =
-  (Kindelia.IO.do_subj (from: U120) => 
-    (Kindelia.IO.do_take (state: KDL.KGT.State) => 
-      let state = User.Sipher.KGT.transfer from to value state
-      (Kindelia.IO.do_save state (_: Unit) => 
-        Kindelia.IO.done (KDL.KGT.Response.send Bool.true)
-      )
+KDL.KGT (KDL.KGT.Action.send from to value) =
+  (Kindelia.IO.do_take (state: KDL.KGT.State) => 
+    let state = User.Sipher.KGT.transfer from to value state
+    (Kindelia.IO.do_save state (_: Unit) => 
+      Kindelia.IO.done (KDL.KGT.Response.send Bool.true)
     )
   )
-
   
 // Check Balance action
 KDL.KGT (KDL.KGT.Action.get user) = 
   (Kindelia.IO.do_take (state: KDL.KGT.State) => 
-    (Kindelia.IO.do_save state (_: Unit) => 
-      let balance = User.Sipher.KGT.get user state
-      Kindelia.IO.done (KDL.KGT.Response.get balance)
+    (Kindelia.IO.do_save state (_: Unit) =>
+    let balance = User.Sipher.KGT.get user state
+    Kindelia.IO.done (KDL.KGT.Response.get balance)
     )
   )
 

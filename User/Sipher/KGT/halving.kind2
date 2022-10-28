@@ -1,4 +1,5 @@
 // Function to verify which halving we are right now
+#kdl_name = KgtHlv
 User.Sipher.KGT.halving
   (last_mint: U120)
 : U120 {
